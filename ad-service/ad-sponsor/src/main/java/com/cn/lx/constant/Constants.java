@@ -13,5 +13,6 @@ public class Constants {
         public static final String ERRORMSG ="请求参数错误";
         public static final String SAMENAME = "相同的用户名";
         public static final String CANFFOUNDRECORD = "查找不到记录";
+        public static final String REQUEST_PARAM_ERROR = "请求错误";
     }
 }

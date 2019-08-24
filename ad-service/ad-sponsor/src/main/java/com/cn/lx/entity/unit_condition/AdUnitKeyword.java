@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 /**
+ * 关键字单元
  * @author StevenLu
  * @date 2019/7/21
  */

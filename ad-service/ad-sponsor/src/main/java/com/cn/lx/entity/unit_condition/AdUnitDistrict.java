@@ -26,6 +26,9 @@ public class AdUnitDistrict {
     @Column(name = "unit_id", nullable = false)
     private Long unitId;
 
+    /**
+     * 省份
+     */
     @Basic
     @Column(name = "province", nullable = false)
     private String province;

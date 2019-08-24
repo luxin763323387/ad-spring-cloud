@@ -2,7 +2,7 @@ package com.cn.lx.service;
 
 import com.cn.lx.entity.AdPlan;
 import com.cn.lx.exception.AdException;
-import com.cn.lx.vo.AdPlanGetResquest;
+import com.cn.lx.vo.AdPlanGetRequest;
 import com.cn.lx.vo.AdPlanRequest;
 import com.cn.lx.vo.AdPlanResponse;
 
@@ -26,7 +26,7 @@ public interface IAdPlanService {
      * @param adPlanGetResquest
      * @return
      */
-    List<AdPlan> getAdPlan(AdPlanGetResquest adPlanGetResquest)throws AdException;
+    List<AdPlan> getAdPlan(AdPlanGetRequest adPlanGetResquest)throws AdException;
 
     /**
      * 更新推广计划

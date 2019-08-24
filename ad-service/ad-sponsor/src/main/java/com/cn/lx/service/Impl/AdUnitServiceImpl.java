@@ -6,15 +6,16 @@ import com.cn.lx.dao.AdPlanRepository;
 import com.cn.lx.dao.AdUnitRepository;
 import com.cn.lx.dao.unit_condition.AdUnitItRepository;
 import com.cn.lx.dao.unit_condition.AdUnitKeywordRepository;
+import com.cn.lx.dao.unit_condition.CreativeUnitRepository;
 import com.cn.lx.entity.AdPlan;
 import com.cn.lx.entity.AdUnit;
 import com.cn.lx.entity.unit_condition.AdUnitIt;
 import com.cn.lx.entity.unit_condition.AdUnitKeyword;
+import com.cn.lx.entity.unit_condition.CreativeUnit;
 import com.cn.lx.exception.AdException;
 import com.cn.lx.service.IAdUnitService;
 import com.cn.lx.vo.*;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -43,6 +44,9 @@ public class AdUnitServiceImpl implements IAdUnitService {
 
     @Resource
     private AdUnitItRepository adUnitItRepository;
+
+    @Resource
+    private CreativeUnitRepository creativeUnitRepository;
 
     @Override
     public AdUnitResponse createAdUnit(AdUnitRequest adUnitRequest) throws AdException {
@@ -73,10 +77,10 @@ public class AdUnitServiceImpl implements IAdUnitService {
 
     @Override
     public AdUnitKeywordResponse createAdUnitKeyword(
-            AdUnitKeywordResquest adUnitKeywordResquest) throws AdException {
+            AdUnitKeywordRequest adUnitKeywordRequest) throws AdException {
 
-        List<Long> unitKeywords = adUnitKeywordResquest.getUnitKeywords().stream()
-                .map(AdUnitKeywordResquest.UnitKeyword::getUnitId)
+        List<Long> unitKeywords = adUnitKeywordRequest.getUnitKeywords().stream()
+                .map(AdUnitKeywordRequest.UnitKeyword::getUnitId)
                 .collect(Collectors.toList());
 
 
@@ -86,7 +90,7 @@ public class AdUnitServiceImpl implements IAdUnitService {
 
         //遍历unitkeywords
         List<AdUnitKeyword> adUnitKeywordList = new ArrayList<>();
-        adUnitKeywordResquest.getUnitKeywords()
+        adUnitKeywordRequest.getUnitKeywords()
                 .forEach(i -> adUnitKeywordList.add(new AdUnitKeyword(i.getUnitId(),i.getKeyword())));
 
         //关键字单元入库
@@ -98,11 +102,11 @@ public class AdUnitServiceImpl implements IAdUnitService {
     }
 
     @Override
-    public AdUnitItResponse createAdUnitIt(AdUnitItResquest adUnitItResquest) throws AdException {
+    public AdUnitItResponse createAdUnitIt(AdUnitItRequest adUnitItRequest) throws AdException {
 
-        log.info("创建广单元想法:{}",JSON.toJSON(adUnitItResquest));
-        List<Long> unitIts = adUnitItResquest.getUnitIts().stream()
-                .map(AdUnitItResquest.UnitIt::getUnitId)
+        log.info("创建广单元想法:{}",JSON.toJSON(adUnitItRequest));
+        List<Long> unitIts = adUnitItRequest.getUnitIts().stream()
+                .map(AdUnitItRequest.UnitIt::getUnitId)
                 .collect(Collectors.toList());
 
         if(CollectionUtils.isEmpty(unitIts)){
@@ -111,7 +115,7 @@ public class AdUnitServiceImpl implements IAdUnitService {
 
         //遍历unitIts
         List<AdUnitIt> adUnitIts = new ArrayList<>();
-        adUnitItResquest.getUnitIts()
+        adUnitItRequest.getUnitIts()
                 .forEach(e -> adUnitIts.add(new AdUnitIt(e.getUnitId(),e.getItTag())));
 
         //unitIts入数据库
@@ -119,6 +123,35 @@ public class AdUnitServiceImpl implements IAdUnitService {
                 .stream().map(AdUnitIt::getId)
                 .collect(Collectors.toList());
         return new AdUnitItResponse(ids);
+    }
+
+    @Override
+    public CreativeUnitResponse createCreativeUnit(CreativeUnitResquest creativeUnitResquest) throws AdException {
+
+        List<Long> creatives = creativeUnitResquest.getCreativeUniItems().stream()
+                .map(CreativeUnitResquest.CreativeUniItem::getCreativeId)
+                .collect(Collectors.toList());
+
+        List<Long> unitIds = creativeUnitResquest.getCreativeUniItems().stream()
+                .map(CreativeUnitResquest.CreativeUniItem::getUnitId)
+                .collect(Collectors.toList());
+
+        //判断创意id和推广单元id是否为空
+        if(!CollectionUtils.isEmpty(creatives) && !CollectionUtils.isEmpty(unitIds)){
+            throw new AdException(Constants.Errmsg.REQUEST_PARAM_ERROR);
+        }
+
+        List<CreativeUnit> creativeUnitList = new ArrayList<>();
+        creativeUnitResquest.getCreativeUniItems().forEach(e -> creativeUnitList.add(
+                new CreativeUnit(e.getUnitId(),e.getCreativeId())
+        ));
+
+
+        List<Long> ids = creativeUnitRepository.saveAll(creativeUnitList).stream()
+                .map(CreativeUnit::getId)
+                .collect(Collectors.toList());
+
+        return new CreativeUnitResponse(ids);
     }
 
 

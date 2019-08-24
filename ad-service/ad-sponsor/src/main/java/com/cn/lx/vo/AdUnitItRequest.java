@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdUnitItResquest {
+public class AdUnitItRequest {
 
     private List<UnitIt> unitIts;
 

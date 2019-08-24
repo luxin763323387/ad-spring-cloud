@@ -10,7 +10,7 @@ import com.cn.lx.entity.AdUser;
 import com.cn.lx.exception.AdException;
 import com.cn.lx.service.IAdPlanService;
 import com.cn.lx.utils.CommonUtils;
-import com.cn.lx.vo.AdPlanGetResquest;
+import com.cn.lx.vo.AdPlanGetRequest;
 import com.cn.lx.vo.AdPlanRequest;
 import com.cn.lx.vo.AdPlanResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -65,13 +65,13 @@ public class AdPlanServiceImpl implements IAdPlanService {
     }
 
     @Override
-    public List<AdPlan> getAdPlan(AdPlanGetResquest adPlanGetResquest) throws AdException {
+    public List<AdPlan> getAdPlan(AdPlanGetRequest adPlanGetRequest) throws AdException {
 
-        if(!adPlanGetResquest.validate()){
+        if(!adPlanGetRequest.validate()){
             throw new AdException(Constants.Errmsg.REQUEST_PARAM_ERROR);
         }
-        return adPlanRepository.findAllByIdInAndUserId(adPlanGetResquest.getIds(),
-                adPlanGetResquest.getUserId());
+        return adPlanRepository.findAllByIdInAndUserId(adPlanGetRequest.getIds(),
+                adPlanGetRequest.getUserId());
     }
 
     @Override

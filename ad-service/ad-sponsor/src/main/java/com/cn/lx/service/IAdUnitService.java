@@ -22,9 +22,16 @@ public interface IAdUnitService {
      * @return
      * @throws AdException
      */
-    AdUnitKeywordResponse createAdUnitKeyword(AdUnitKeywordResquest adUnitKeywordResquest) throws AdException;
+    AdUnitKeywordResponse createAdUnitKeyword(AdUnitKeywordRequest adUnitKeywordResquest) throws AdException;
+
+    /**
+     * 创建想法单元
+     * @param adUnitItRequest
+     * @return
+     * @throws AdException
+     */
+    AdUnitItResponse createAdUnitIt(AdUnitItRequest adUnitItRequest) throws AdException;
 
 
-    AdUnitItResponse createAdUnitIt(AdUnitItResquest adUnitItResquest) throws AdException;
-    
+    CreativeUnitResponse createCreativeUnit(CreativeUnitResquest creativeUnitResquest) throws AdException;
 }

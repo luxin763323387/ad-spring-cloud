@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreativeUnitResquest {
+public class CreativeUnitRequest {
 
     List<CreativeUniItem> creativeUniItems;
 

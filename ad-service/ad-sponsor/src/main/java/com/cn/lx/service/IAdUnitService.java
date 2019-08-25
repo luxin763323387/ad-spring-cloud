@@ -32,6 +32,19 @@ public interface IAdUnitService {
      */
     AdUnitItResponse createAdUnitIt(AdUnitItRequest adUnitItRequest) throws AdException;
 
+    /**
+     * 创建描述单元
+     * @param adUnitDistrictRequest
+     * @return
+     * @throws AdException
+     */
+    AdUnitDistrictResponse createAdUnitDistrict(AdUnitDistrictRequest adUnitDistrictRequest) throws AdException;
 
-    CreativeUnitResponse createCreativeUnit(CreativeUnitResquest creativeUnitResquest) throws AdException;
+    /**
+     * 创意和单元关联
+     * @param creativeUnitRequest
+     * @return
+     * @throws AdException
+     */
+    CreativeUnitResponse createCreativeUnit(CreativeUnitRequest creativeUnitRequest) throws AdException;
 }

@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.cn.lx.constant.Constants;
 import com.cn.lx.dao.AdPlanRepository;
 import com.cn.lx.dao.AdUnitRepository;
+import com.cn.lx.dao.unit_condition.AdUnitDistrictRepository;
 import com.cn.lx.dao.unit_condition.AdUnitItRepository;
 import com.cn.lx.dao.unit_condition.AdUnitKeywordRepository;
 import com.cn.lx.dao.unit_condition.CreativeUnitRepository;
 import com.cn.lx.entity.AdPlan;
 import com.cn.lx.entity.AdUnit;
+import com.cn.lx.entity.unit_condition.AdUnitDistrict;
 import com.cn.lx.entity.unit_condition.AdUnitIt;
 import com.cn.lx.entity.unit_condition.AdUnitKeyword;
 import com.cn.lx.entity.unit_condition.CreativeUnit;
@@ -44,6 +46,9 @@ public class AdUnitServiceImpl implements IAdUnitService {
 
     @Resource
     private AdUnitItRepository adUnitItRepository;
+
+    @Resource
+    private AdUnitDistrictRepository adUnitDistrictRepository;
 
     @Resource
     private CreativeUnitRepository creativeUnitRepository;
@@ -126,23 +131,44 @@ public class AdUnitServiceImpl implements IAdUnitService {
     }
 
     @Override
-    public CreativeUnitResponse createCreativeUnit(CreativeUnitResquest creativeUnitResquest) throws AdException {
+    public AdUnitDistrictResponse createAdUnitDistrict(AdUnitDistrictRequest adUnitDistrictRequest) throws AdException {
 
-        List<Long> creatives = creativeUnitResquest.getCreativeUniItems().stream()
-                .map(CreativeUnitResquest.CreativeUniItem::getCreativeId)
+        List<Long> unitDistricts = adUnitDistrictRequest.getUnitDistricts().stream()
+                .map(AdUnitDistrictRequest.UnitDistrict::getUnitId)
+                .collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(unitDistricts)){
+            throw new AdException(Constants.Errmsg.REQUEST_PARAM_ERROR);
+        }
+
+        List<AdUnitDistrict> adUnitDistrictList = new ArrayList<>();
+        adUnitDistrictRequest.getUnitDistricts().
+                forEach(e -> adUnitDistrictList.add(new AdUnitDistrict(e.getUnitId(),e.getProvince(),e.getProvince())));
+
+        List<Long> ids = adUnitDistrictRepository.saveAll(adUnitDistrictList).stream()
+                .map(AdUnitDistrict::getId)
                 .collect(Collectors.toList());
 
-        List<Long> unitIds = creativeUnitResquest.getCreativeUniItems().stream()
-                .map(CreativeUnitResquest.CreativeUniItem::getUnitId)
+        return new AdUnitDistrictResponse(ids);
+    }
+
+    @Override
+    public CreativeUnitResponse createCreativeUnit(CreativeUnitRequest creativeUnitRequest) throws AdException {
+
+        List<Long> creatives = creativeUnitRequest.getCreativeUniItems().stream()
+                .map(CreativeUnitRequest.CreativeUniItem::getCreativeId)
+                .collect(Collectors.toList());
+
+        List<Long> unitIds = creativeUnitRequest.getCreativeUniItems().stream()
+                .map(CreativeUnitRequest.CreativeUniItem::getUnitId)
                 .collect(Collectors.toList());
 
         //判断创意id和推广单元id是否为空
-        if(!CollectionUtils.isEmpty(creatives) && !CollectionUtils.isEmpty(unitIds)){
+        if(CollectionUtils.isEmpty(creatives) && CollectionUtils.isEmpty(unitIds)){
             throw new AdException(Constants.Errmsg.REQUEST_PARAM_ERROR);
         }
 
         List<CreativeUnit> creativeUnitList = new ArrayList<>();
-        creativeUnitResquest.getCreativeUniItems().forEach(e -> creativeUnitList.add(
+        creativeUnitRequest.getCreativeUniItems().forEach(e -> creativeUnitList.add(
                 new CreativeUnit(e.getUnitId(),e.getCreativeId())
         ));
 

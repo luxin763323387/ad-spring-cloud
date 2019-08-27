@@ -26,8 +26,14 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private AdUserRepository adUserRepository;
 
+    /**
+     * 创建用户
+     * @param createUserRequest
+     * @return
+     * @throws AdException
+     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public CreateUserResponse createUser(CreateUserRequest createUserRequest) throws AdException {
 
         if(createUserRequest.validate()){
